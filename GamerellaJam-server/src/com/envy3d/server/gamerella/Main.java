@@ -1,28 +1,36 @@
 package com.envy3d.server.gamerella;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
-import com.envy3d.networking.shared.Packets.*;
+import com.envy3d.shared.Map;
+import com.envy3d.shared.Packets.*;
 
 public class Main {
 	public static NetworkServer netServer;
+	public static GameLogic gameLogic;
+	public static long currentTime;
+	public static float deltaTime;
 	
 	public static void main(String[] args) {
+		gameLogic = new GameLogic();
 		try {
-			netServer = new NetworkServer();
+			netServer = new NetworkServer(gameLogic);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		currentTime = System.nanoTime();
+		deltaTime = 0.01f;
+		
 		while(true) {
-			if(netServer.server != null) {
-				if (netServer.server.getConnections() != null) {
-					//stuff
-					Packet2Message p2m = new Packet2Message();
-					p2m.message = "connected!";
-					netServer.server.sendToAllTCP(p2m);
-				}
-			}
+			deltaTime = TimeUnit.SECONDS.convert(System.nanoTime() - currentTime, TimeUnit.NANOSECONDS);
+			currentTime = System.nanoTime();
+			update(deltaTime);
+			
 		}
 	}
 
+	public static void update(float delta) {
+		
+	}
 }
