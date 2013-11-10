@@ -6,19 +6,19 @@ import java.net.URL;
 import java.util.Scanner;
 
 import com.badlogic.gdx.Gdx;
+import com.envy3d.GamerellaJam.GameScreen;
 import com.envy3d.shared.PacketRegister;
 import com.esotericsoftware.kryonet.Client;
 
 public class NetworkClient {
 	private static final String urlString = "ec2-54-214-194-15.us-west-2.compute.amazonaws.com";
-	
+	private GameScreen gameScreen;
 	public Client client;
-	public static Scanner scanner;
 	
-	public NetworkClient() {
+	public NetworkClient(GameScreen gameScreen) {
 		client = new Client();
 		register();
-		ClientNetworkListener nl = new ClientNetworkListener();
+		ClientNetworkListener nl = new ClientNetworkListener(gameScreen);
 		nl.init(client);
 		client.addListener(nl);
 		client.start();

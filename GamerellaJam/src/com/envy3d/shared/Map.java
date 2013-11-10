@@ -27,6 +27,15 @@ public class Map {
 		}
 	}
 	
+	public synchronized void set(int x, int y, int natureTex, boolean gilded) {
+		if (y >= 0 && y < HEIGHT) {
+			if (x >= 0 && x < WIDTH) {
+				map[y][x].natureTex = natureTex;
+				map[y][x].gilded = gilded;
+			}
+		}
+	}
+	
 	public synchronized MapTile get(int x, int y) { 
 		return map[y][x];
 	}

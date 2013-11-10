@@ -1,6 +1,8 @@
 package com.envy3d.server.gamerella;
 
+import com.badlogic.gdx.utils.IntMap.Entry;
 import com.envy3d.shared.Entity;
+import com.envy3d.shared.IntVec2;
 import com.envy3d.shared.Map;
 import com.envy3d.shared.Packets.*;
 import com.esotericsoftware.kryonet.Connection;
@@ -20,15 +22,16 @@ public class ServerNetworkListener extends Listener {
 	public void connected(Connection connection) {
 		super.connected(connection);
 		System.out.println("[SERVER] Someone has connected.");
-		for (int i = 0; i < gameLogic.map.HEIGHT; i++) {
-			for (int j = 0; j < gameLogic.map.WIDTH; j++) {
-				connection.sendTCP(new PacketTileState((byte)gameLogic.map.get(j, i).natureTex, gameLogic.map.get(j, i).gilded));
+		for (int i = 0; i < Map.HEIGHT; i++) {
+			for (int j = 0; j < Map.WIDTH; j++) {
+				connection.sendTCP(new PacketTileState((short)j, (short)i, (byte)gameLogic.map.get(j, i).natureTex,
+														gameLogic.map.get(j, i).gilded));
 			}
 		}
 		int gildedCounter = 0;
-		for (Entity e : gameLogic.entities) {
-			connection.sendTCP(new PacketSpawn(e.id, e.isGilded(), e.posX, e.posY));
-			if (e.isGilded())
+		for (Entry<Entity> e : gameLogic.entities.entries()) {
+			connection.sendTCP(new PacketSpawn(e.value.id, e.value.isGilded(), e.value.posX, e.value.posY));
+			if (e.value.isGilded())
 				gildedCounter++;
 			else
 				gildedCounter--;
@@ -36,7 +39,7 @@ public class ServerNetworkListener extends Listener {
 		Entity entity = new Entity((short)gameLogic.entityIdAssignment, gildedCounter <= 0 ? true : false,
 				  gameLogic.rand.nextInt(Map.WIDTH), gameLogic.rand.nextInt(Map.HEIGHT));
 		gameLogic.entityIdAssignment++;
-		gameLogic.entities.add(entity);
+		gameLogic.entities.put(entity.id, entity);
 		server.sendToAllTCP(new PacketSpawn(entity.id, entity.isGilded(), entity.posX, entity.posY));
 		connection.sendTCP(new PacketStart(entity.id));
 	}
@@ -52,16 +55,26 @@ public class ServerNetworkListener extends Listener {
 		super.received(connection, object);
 		
 		if (object instanceof PacketLogInRequest) {
-			PacketLogInAnswer logInAnswer = new PacketLogInAnswer();
-			logInAnswer.accepted = true;
-			connection.sendTCP(logInAnswer);
+			//PacketLogInAnswer logInAnswer = new PacketLogInAnswer();
+			//logInAnswer.accepted = true;
+			//connection.sendTCP(logInAnswer);
 		}
 		
 		if (object instanceof PacketMessage) {
-			String message = ((PacketMessage)object).message;
-			System.out.println(message);
-			((PacketMessage)object).message = ((PacketMessage)object).message + "0";
-			connection.sendTCP(object);
+			//String message = ((PacketMessage)object).message;
+			//System.out.println(message);
+			//((PacketMessage)object).message = ((PacketMessage)object).message + "0";
+			//connection.sendTCP(object);
+		}
+		
+		if (object instanceof PacketMove) {
+			server.sendToAllTCP(object);
+			Entity tempEntity = gameLogic.entities.get(((PacketMove)object).id);
+			if (tempEntity != null) {
+				tempEntity.posX = ((PacketMove)object).startX;
+				tempEntity.posY = ((PacketMove)object).startY;
+				tempEntity.dest = new IntVec2(((PacketMove)object).destX, ((PacketMove)object).destX);
+			}
 		}
 	}	
 }

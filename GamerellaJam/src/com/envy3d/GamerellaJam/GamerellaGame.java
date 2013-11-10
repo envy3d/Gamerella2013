@@ -1,11 +1,8 @@
 package com.envy3d.GamerellaJam;
 
-import java.io.IOException;
-import java.util.Scanner;
-
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,11 +10,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.net.ServerSocket;
-import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.input.GestureDetector;
 import com.envy3d.GamerellaJam.networking.NetworkClient;
 
-public class GamerellaGame implements ApplicationListener {
+public class GamerellaGame extends Game {
+	private GameScreen gameScreen;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
@@ -30,6 +27,8 @@ public class GamerellaGame implements ApplicationListener {
 	
 	@Override
 	public void create() {		
+		gameScreen = new GameScreen();
+		Gdx.input.setInputProcessor(new GestureDetector(gameScreen));
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		
@@ -46,7 +45,7 @@ public class GamerellaGame implements ApplicationListener {
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
 		
-		client = new NetworkClient();
+		client = new NetworkClient(gameScreen);
 	}
 
 	@Override
@@ -65,6 +64,7 @@ public class GamerellaGame implements ApplicationListener {
 		batch.begin();
 		sprite.draw(batch);
 		batch.end();
+		setScreen(gameScreen);
 	}
 
 	@Override

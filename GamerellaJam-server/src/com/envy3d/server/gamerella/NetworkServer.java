@@ -12,7 +12,7 @@ public class NetworkServer {
 	public NetworkServer(GameLogic gameLogic) throws IOException {
 		server = new Server();
 		registerPackets();
-		server.addListener(new ServerNetworkListener(gameLogic));
+		server.addListener(new ServerNetworkListener(gameLogic, server));
 		server.bind(54555);
 		server.start();
 		System.out.println("Host has connected to client.");
