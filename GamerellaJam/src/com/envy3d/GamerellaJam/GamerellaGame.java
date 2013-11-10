@@ -1,7 +1,11 @@
 package com.envy3d.GamerellaJam;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,12 +13,20 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.net.ServerSocket;
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.envy3d.GamerellaJam.networking.NetworkClient;
 
 public class GamerellaGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
 	private Sprite sprite;
+	private NetworkClient client;
+	
+	public GamerellaGame() {
+		
+	}
 	
 	@Override
 	public void create() {		
@@ -33,12 +45,15 @@ public class GamerellaGame implements ApplicationListener {
 		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
+		client = new NetworkClient();
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
 		texture.dispose();
+		
 	}
 
 	@Override
