@@ -20,6 +20,10 @@ public class GamerellaGame extends Game {
 	private Texture texture;
 	private Sprite sprite;
 	private NetworkClient client;
+	public Sprite natSprite;
+	public Sprite golSprite;
+	public Sprite natTiles;
+	public Sprite golTiles;
 	
 	public GamerellaGame() {
 		
@@ -44,6 +48,11 @@ public class GamerellaGame extends Game {
 		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
+		natSprite = new Sprite(new Texture(Gdx.files.internal("NatureGirl.png")));
+		golSprite = new Sprite(new Texture(Gdx.files.internal("GoldenBoy.png")));
+		natTiles = new Sprite(new Texture(Gdx.files.internal("Grass.png")));
+		golTiles = new Sprite(new Texture(Gdx.files.internal("Gold.png")));
 		
 		client = new NetworkClient(gameScreen);
 	}

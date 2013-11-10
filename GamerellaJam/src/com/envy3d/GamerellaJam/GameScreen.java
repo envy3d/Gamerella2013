@@ -1,19 +1,30 @@
 package com.envy3d.GamerellaJam;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntMap.Entry;
 import com.envy3d.shared.Entity;
+import com.envy3d.shared.FloatVec2;
 import com.envy3d.shared.Map;
 
 public class GameScreen implements Screen, GestureListener {
 	public IntMap<Entity> entities;
 	public Map map;
+	public SpriteBatch spriteBatch;
+	public OrthographicCamera orthoCam;
+	
 	
 	public int playerId;
 	
 	public GameScreen() {
+		spriteBatch = new SpriteBatch();
+		orthoCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		entities = new IntMap<Entity>(10);
 		map = new Map();
 		playerId = -1;
@@ -21,8 +32,30 @@ public class GameScreen implements Screen, GestureListener {
 
 	@Override
 	public void render(float delta) {
-		
-		
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if (playerId >= 0) {
+			for (Entry<Entity> e : entities.entries()) {
+				float xDiff = e.value.dest.x - e.value.posX;
+				float yDiff = e.value.dest.y - e.value.posY;
+				if (Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)) <= Entity.MAX_SPEED * delta) {
+					e.value.posX = e.value.dest.x;
+					e.value.posY = e.value.dest.y;
+				}
+				else {
+					e.value.dirVec = (new FloatVec2(xDiff, yDiff)).normalize();
+					e.value.posX = (int)(e.value.dirVec.x * Entity.MAX_SPEED * delta);
+					e.value.posY = (int)(e.value.dirVec.y * Entity.MAX_SPEED * delta);
+				}
+			}
+			Entity entity = entities.get(playerId);
+			orthoCam.position.set(entity.posX, entity.posY, 0);
+			//orthoCam.translate(entity.posX - orthoCam.position.x, entity.posY - orthoCam.position.y);
+			orthoCam.update();
+			spriteBatch.begin();
+			
+			spriteBatch.end();
+		}
 	}
 
 	@Override

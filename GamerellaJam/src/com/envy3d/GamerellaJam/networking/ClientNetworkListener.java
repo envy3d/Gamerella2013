@@ -36,38 +36,7 @@ public class ClientNetworkListener extends Listener {
 	@Override
 	public void received(Connection connection, Object object) {
 		super.received(connection, object);
-		/*
-		if (object instanceof PacketLogInAnswer) {
-			boolean answer = ((PacketLogInAnswer)object).accepted;
-			
-			if (answer) {
-				//Log.info("Enter your first message for the server.");
-				//while (true) {
-					//if (MPClient.scanner.hasNext()) {
-						PacketMessage mpacket = new PacketMessage();
-						//mpacket.message = MPClient.scanner.nextLine();
-						mpacket.message = "Apples";
-						PacketMessage mpacket2 = new PacketMessage();
-						mpacket2.message = "Oranges";
-						client.sendTCP(mpacket);
-						client.sendTCP(mpacket2);
-						//Log.info("Enter another message.");
-						System.out.println(mpacket.message);
-						System.out.println(mpacket2.message);
-					//}
-				//}
-			}
-			else {
-				connection.close();
-			}
-		}
-		if (object instanceof PacketMessage) {
-			String message = ((PacketMessage)object).message;
-			System.out.println(message);
-			((PacketMessage)object).message = ((PacketMessage)object).message + "1";
-			connection.sendTCP(object);
-		}
-		*/
+
 		if (object instanceof PacketMove) {
 			Entity tempEntity = gameScreen.entities.get(((PacketMove)object).id);
 			if (tempEntity != null) {
@@ -77,7 +46,7 @@ public class ClientNetworkListener extends Listener {
 			}
 		}
 		else if (object instanceof PacketTransmute) {
-			
+			gameScreen.map.set(((PacketTransmute)object).tileX, ((PacketTransmute)object).tileY, ((PacketTransmute)object).gilded);
 		}
 		else if (object instanceof PacketSpawn) {
 			gameScreen.entities.put(((PacketSpawn)object).id, new Entity(((PacketSpawn)object).id, ((PacketSpawn)object).gilded,

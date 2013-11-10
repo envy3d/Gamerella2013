@@ -15,6 +15,7 @@ public class ServerNetworkListener extends Listener {
 	
 	public ServerNetworkListener(GameLogic gameLogic, Server server) {
 		this.gameLogic = gameLogic;
+		this.server = server;
 	}
 	
 	
@@ -22,12 +23,12 @@ public class ServerNetworkListener extends Listener {
 	public void connected(Connection connection) {
 		super.connected(connection);
 		System.out.println("[SERVER] Someone has connected.");
-		for (int i = 0; i < Map.HEIGHT; i++) {
+		/*for (int i = 0; i < Map.HEIGHT; i++) {
 			for (int j = 0; j < Map.WIDTH; j++) {
 				connection.sendTCP(new PacketTileState((short)j, (short)i, (byte)gameLogic.map.get(j, i).natureTex,
 														gameLogic.map.get(j, i).gilded));
 			}
-		}
+		}*/
 		int gildedCounter = 0;
 		for (Entry<Entity> e : gameLogic.entities.entries()) {
 			connection.sendTCP(new PacketSpawn(e.value.id, e.value.isGilded(), e.value.posX, e.value.posY));
@@ -53,19 +54,6 @@ public class ServerNetworkListener extends Listener {
 	@Override
 	public void received(Connection connection, Object object) {
 		super.received(connection, object);
-		
-		if (object instanceof PacketLogInRequest) {
-			//PacketLogInAnswer logInAnswer = new PacketLogInAnswer();
-			//logInAnswer.accepted = true;
-			//connection.sendTCP(logInAnswer);
-		}
-		
-		if (object instanceof PacketMessage) {
-			//String message = ((PacketMessage)object).message;
-			//System.out.println(message);
-			//((PacketMessage)object).message = ((PacketMessage)object).message + "0";
-			//connection.sendTCP(object);
-		}
 		
 		if (object instanceof PacketMove) {
 			server.sendToAllTCP(object);

@@ -25,8 +25,8 @@ public class NetworkClient {
 		
 		while (!client.isConnected()) {
 			try {
-				//client.connect(15000, "", 54555);
-				client.connect(15000, InetAddress.getByName(new URL(urlString).getHost()).getHostAddress(), 54555);
+				client.connect(15000, "132.205.167.195", 54551);
+				//client.connect(15000, InetAddress.getByName(new URL(urlString).getHost()).getHostAddress(), 54555);
 			} catch (IOException e) {
 				e.printStackTrace();
 				client.stop();

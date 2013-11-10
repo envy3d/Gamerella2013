@@ -5,6 +5,9 @@ import java.util.Random;
 public class Map {
 	public static final int WIDTH = 200;
 	public static final int HEIGHT = 200;
+	public static final int TILE_WIDTH = 32;
+	public static final int TILE_HEIGHT = 32;
+	public static final int TILE_VARIENTS = 1;
 	private MapTile[][] map;
 	
 	
@@ -14,7 +17,7 @@ public class Map {
 		for (int i = 0; i < HEIGHT; i++) {
 			map[i] = new MapTile[WIDTH];
 			for (int j = 0; j < WIDTH; j++) {
-				map[i][j] = new MapTile(r.nextInt(2));
+				map[i][j] = new MapTile(r.nextInt(TILE_VARIENTS));
 			}
 		}
 	}
